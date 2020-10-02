@@ -1,0 +1,35 @@
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory app:title="@string/push_notification_header">
+
+        <SwitchPreferenceCompat
+            android:key="notifications"
+            android:summaryOff="@string/notification_unsubscribed"
+            android:summaryOn="@string/notification_subscribed"
+            android:title="@string/subscription_title" />
+
+        <SwitchPreferenceCompat
+            app:key="londone"
+            app:title="@string/london_geekzone_events_title"
+            app:summaryOn="@string/notification_subscribed"
+            app:summaryOff="@string/notification_unsubscribed"
+            app:dependency="notifications"/>
+
+        <SwitchPreferenceCompat
+            app:key="coventrye"
+            app:title="@string/coventry_geekzone_events_title"
+            app:summaryOn="@string/notification_subscribed"
+            app:summaryOff="@string/notification_unsubscribed"
+            app:dependency="notifications"/>
+
+        <SwitchPreferenceCompat
+            app:key="chelmsforde"
+            app:title="@string/celmsford_geekzone_events_title"
+            app:summaryOn="@string/notification_subscribed"
+            app:summaryOff="@string/notification_unsubscribed"
+            app:dependency="notifications"/>
+
+    </PreferenceCategory>
+
+</PreferenceScreen>
