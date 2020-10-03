@@ -18,11 +18,7 @@
 package zone.geek.membership.fragments
 
 import android.annotation.SuppressLint
-import android.content.res.ColorStateList
 import android.graphics.Bitmap
-import android.graphics.Color
-import android.graphics.ColorFilter
-import android.graphics.PorterDuff
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -30,7 +26,6 @@ import android.view.ViewGroup
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.ProgressBar
-import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import kotlinx.android.synthetic.main.fragment_web.view.*
 import zone.geek.membership.R
@@ -39,7 +34,6 @@ import zone.geek.membership.activity.GeekZoneActivity.Companion.EVENT_DETAILS_UR
 class WebFragment : Fragment() {
 
     companion object {
-        private lateinit var dialog: AlertDialog
         private lateinit var progressBar: ProgressBar
         lateinit var webView: WebView
     }
@@ -63,6 +57,7 @@ class WebFragment : Fragment() {
         webView.isScrollbarFadingEnabled = true
         webView.clearHistory()
         webView.clearCache(true)
+        webView.setLayerType(View.LAYER_TYPE_HARDWARE, null)
         webView.webViewClient = ViewClient()
 
         progressBar = rootView.progress_bar
