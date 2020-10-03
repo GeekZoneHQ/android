@@ -66,7 +66,10 @@ class GeekZoneActivity : AppCompatActivity(),
     }
 
     private fun addFragment() {
-        replaceFragment(EventsFragment(), EVENTS_FRAGMENT_TAG, R.string.title_main)
+        supportFragmentManager.commit {
+            replace(R.id.frame_layout, EventsFragment(), EVENTS_FRAGMENT_TAG)
+        }
+        this.title = getString(R.string.title_main)
     }
 
     private fun createNavigationDrawer() {
@@ -112,11 +115,7 @@ class GeekZoneActivity : AppCompatActivity(),
                 replaceFragment(EventsFragment(), EVENTS_FRAGMENT_TAG, R.string.title_events)
             }
             R.id.news -> {
-                replaceFragment(
-                    LatestNewsFragment(),
-                    LATEST_NEWS_FRAGMENT_TAG,
-                    R.string.title_latest_news
-                )
+                replaceFragment(LatestNewsFragment(), LATEST_NEWS_FRAGMENT_TAG, R.string.title_latest_news)
                 title = getString(R.string.title_latest_news)
             }
             R.id.settings -> {

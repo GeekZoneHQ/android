@@ -37,4 +37,5 @@
     <string name="exit_warning_alert_option_yes">yes</string>
     <string name="exit_warning_alert_option_no">no</string>
     <string name="exit_message_text">Exit</string>
+    <string name="geek_zone_uk_splash_text">Geek.Zone UK</string>
 </resources>
