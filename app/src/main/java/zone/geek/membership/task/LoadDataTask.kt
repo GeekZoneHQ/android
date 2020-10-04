@@ -17,7 +17,6 @@
 
 package zone.geek.membership.task
 
-import android.content.Context
 import android.text.TextUtils
 import android.util.Log
 import androidx.appcompat.app.AlertDialog
@@ -41,6 +40,7 @@ import kotlin.collections.ArrayList
 class LoadDataTask(private var fragment: LoadDataFragment) : RssAsyncTask<Int, Void, Exception?>() {
     private lateinit var eventsList: ArrayList<Event>
     private lateinit var dialog: AlertDialog
+    private var isAdded = false
     private val networkResponseListener: NetworkResponseListener get() = fragment
 
     companion object {
@@ -59,9 +59,12 @@ class LoadDataTask(private var fragment: LoadDataFragment) : RssAsyncTask<Int, V
 
     override fun onPreExecute() {
         super.onPreExecute()
-        val context = fragment.context as Context
-        dialog = PROGRESS_TEXT.setProgressDialog(context)
-        dialog.show()
+        isAdded = fragment.isAdded
+        if (isAdded) {
+            val activity = fragment.requireActivity()
+            dialog = PROGRESS_TEXT.setProgressDialog(activity)
+            dialog.show()
+        }
     }
 
     override fun doInBackground(vararg params: Int?): Exception? {
@@ -138,8 +141,8 @@ class LoadDataTask(private var fragment: LoadDataFragment) : RssAsyncTask<Int, V
         } else {
             networkResponseListener.failedData()
         }
-
-        dialog.dismiss()
+        if (isAdded)
+            dialog.dismiss()
     }
 
     private fun getDate(content: String): String {
