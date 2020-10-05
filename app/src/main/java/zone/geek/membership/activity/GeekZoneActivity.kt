@@ -17,6 +17,7 @@
 
 package zone.geek.membership.activity
 
+import android.content.DialogInterface
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -27,7 +28,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.GravityCompat
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.commit
 import com.google.android.material.navigation.NavigationView
 import kotlinx.android.synthetic.main.activity_geek_zone.*
 import kotlinx.android.synthetic.main.content_main.*
@@ -66,9 +66,9 @@ class GeekZoneActivity : AppCompatActivity(),
     }
 
     private fun addFragment() {
-        supportFragmentManager.commit {
-            replace(R.id.frame_layout, EventsFragment(), EVENTS_FRAGMENT_TAG)
-        }
+        val fragmentManager = supportFragmentManager.beginTransaction()
+        fragmentManager.replace(R.id.frame_layout, EventsFragment(), EVENTS_FRAGMENT_TAG)
+        fragmentManager.commit()
         this.title = getString(R.string.title_main)
     }
 
@@ -115,15 +115,15 @@ class GeekZoneActivity : AppCompatActivity(),
                 replaceFragment(EventsFragment(), EVENTS_FRAGMENT_TAG, R.string.title_events)
             }
             R.id.news -> {
-                replaceFragment(LatestNewsFragment(), LATEST_NEWS_FRAGMENT_TAG, R.string.title_latest_news)
+                replaceFragment(
+                    LatestNewsFragment(),
+                    LATEST_NEWS_FRAGMENT_TAG,
+                    R.string.title_latest_news
+                )
                 title = getString(R.string.title_latest_news)
             }
-            R.id.settings -> {
-                replaceFragment(SettingsFragment(), SETTINGS_FRAGMENT_TAG, R.string.title_settings)
-            }
-            R.id.logout -> {
-                replaceFragment(LogoutFragment(), LOGOUT_FRAGMENT_TAG, R.string.title_logout)
-            }
+            R.id.settings -> replaceFragment(SettingsFragment(), SETTINGS_FRAGMENT_TAG, R.string.title_settings)
+            R.id.logout -> replaceFragment(LogoutFragment(), LOGOUT_FRAGMENT_TAG, R.string.title_logout)
         }
         drawer_layout.closeDrawer(GravityCompat.START)
         return true
@@ -143,12 +143,14 @@ class GeekZoneActivity : AppCompatActivity(),
     override fun onEventSelected(position: Int, uri: String) {
         val bundle = Bundle()
         bundle.putString(EVENT_DETAILS_URI, uri)
+        val webFragment = WebFragment()
+        webFragment.arguments = bundle
+        replaceFragment(
+            webFragment,
+            WEB_FRAGMENT_TAG,
+            R.string.title_event
+        )
 
-        supportFragmentManager.commit {
-            replace(R.id.frame_layout, WebFragment::class.java, bundle, WEB_FRAGMENT_TAG)
-            addToBackStack(null)
-        }
-        title = getString(R.string.title_event)
     }
 
     private fun replaceFragment(
@@ -156,22 +158,27 @@ class GeekZoneActivity : AppCompatActivity(),
         tag: String,
         titleResId: Int
     ) {
-        supportFragmentManager.commit {
-            replace(R.id.frame_layout, fragmentClass, tag)
-            addToBackStack(null)
-        }
+        val fragmentManager = supportFragmentManager.beginTransaction()
+        fragmentManager.replace(R.id.frame_layout, fragmentClass, tag)
+        fragmentManager.addToBackStack(null)
+        fragmentManager.commit()
         this.title = getString(titleResId)
     }
 
-    private fun clickBackButton() {
-        if (supportFragmentManager.backStackEntryCount > 0) {
-            super.onBackPressed()
-        } else {
+    private fun clickBackButton() =
+        when {
+            supportFragmentManager.backStackEntryCount > 0 -> {
+                super.onBackPressed()
+            }
+        else -> {
             val builder =
                 AlertDialog.Builder(this)
 
-            val imageResource = R.drawable.ic_error_outline_black_24dp
-            val image = ResourcesCompat.getDrawable(resources, imageResource, theme)
+            val imageResource =
+                R.drawable.ic_error_outline_black_24dp
+
+            val image =
+                ResourcesCompat.getDrawable(resources, imageResource, theme)
 
             builder.setTitle(getString(R.string.exit_message_text))
                 .setMessage(getString(R.string.exit_warning_alert_dialog_yes)).setIcon(image)
@@ -179,9 +186,6 @@ class GeekZoneActivity : AppCompatActivity(),
                 .setPositiveButton(
                     getString(R.string.exit_warning_alert_option_yes)
                 ) { _, _ -> finish() }
-                .setNegativeButton(
-                    getString(R.string.exit_warning_alert_option_no)
-                ) { _, _ -> }
 
             val alert = builder.create()
             alert.setCancelable(false)
